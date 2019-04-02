@@ -1,0 +1,22 @@
+{
+  "name": "taskcreator",
+  "version": "1.0.0",
+  "description": "L1 task creation",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/parulrawat0101/TaskCreator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/parulrawat0101/TaskCreator/issues"
+  },
+  "homepage": "https://github.com/parulrawat0101/TaskCreator#readme",
+  "dependencies": {
+    "bluebird": "^3.5.3"
+  }
+}

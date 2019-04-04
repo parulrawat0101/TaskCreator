@@ -30,31 +30,43 @@ var data={
         //2. split the string in array
         var splitTaskID= this.splitTaskIDString(taskID); //3. now append the folder path
         var folderPath=`${configPath}\\XMLs\\TaskXmls2019\\${splitTaskID[0]}\\${splitTaskID[1]}\\${splitTaskID[2]}`;
-        debugger;
-       if(fs.statSync(folderPath).isDirectory() === true){          //if directory exists
-        //    console.log(path.parse(folderPath));
-            console.log(process.config);
-            console.log(process.env);
-            return folderPath;
-       }
-       else{ 
-           mkdirp(folderPath,(err)=>{
-        if(err) {console.log(err)}
-        else {console.log("sucvces")
-         return folderPath;}
-    });} // make directory to be done later : fs.mkdirSync(folderPath);
-    },
+        var folderName=`${folderPath}\\${splitTaskID[3]}.${splitTaskID[4]}.${splitTaskID[5]}`;
+        console.log(folderName);
+        this.createFolder(folderPath,folderName);
+},
     splitTaskIDString : function (taskID) {
         var arr=new Array();        
         arr=taskID.split(".");      
-        arr[0]=arr[0].replace(/\d/gi,'')
+        arr[0]=arr[0].replace(/\d/gi,'').toLowerCase();
+        arr[1]=arr[1].toLowerCase();
+        console.log(arr)
         return arr;
     },
-    createFolder : function (taskFolderPath) {
-        mkdirp('taskFolderPath',(err)=>{
-            if(err) {console.log(err)}
-            else {console.log("sucvces")}
-        });
+    createFolder : function (folderPath,folderName) {
+        console.log(fs.statSync(folderPath).isDirectory());
+        if (fs.statSync(folderPath).isDirectory() === true){    
+            console.log("in if")  //if directory exists
+            fs.mkdir(folderName,(err)=>{
+                if(err) {
+                    console.log(err);
+                }
+                else {
+                    console.log('success');
+                }
+            })
+            return folderPath;
+       }
+       else { 
+           console.log("in else");
+           fs.mkdir(folderPath,(err)=>{
+                if(err) {console.log(err)}
+                else {console.log("success")}
+           });
+            fs.mkdir(folderName,(err)=>{
+                if(err) {console.log(err)}
+                else {console.log("success")}
+            });
+    }
     }
 }
 module.exports=data;

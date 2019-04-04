@@ -1,4 +1,5 @@
 {
     "path":"E:\\Sim5GIT\\Modules\\sim5service",
-    "enable":"true"
+    "enable":"true",
+    "stepConcatenation": "E:\\Sim5GIT\\tools-investigations-2019\\tools\\step-concatenation-tool"
 }

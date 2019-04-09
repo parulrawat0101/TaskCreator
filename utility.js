@@ -102,39 +102,57 @@ var data={
         });
     },
     rebase : function(stepConcatenationPath) {
-
-        cp.exec("node dist/index.js --input=input.json", {cwd: stepConcatenationPath}, function(error,stdout,stderr){
-        if (error) {
-            console.log("error while rebasing:"+error);
-            return 0;
-        }
-        console.log(stdout);
-        console.log(stderr);
-        return 1;
+        return new Promise ((resolve,reject)=>{
+            cp.exec("node dist/index.js --input=input.json", {cwd: stepConcatenationPath}, function(error,stdout,stderr){
+                if (error) {
+                    reject (error);
+                }
+                else resolve (stdout);
+                
+            });
+        })
         
-    });
     },
-    gitCommit : function (stepConcatenationPath) {
+    gitCommit : function () {
 
         var issueID=process.argv[3];
-        cp.exec(`git commit -am '${issueID}'`, function(error,stdout,stderr){
+        cp.exec(`git add .`, {cwd: this.folderPath}, function(error,stdout,stderr){
             if (error) {
                 console.log("Error occured while committing:"+error);
                 throw new Error(error);
             }
-            console.log(stdout);
-            console.log(stderr);
+            else {
+                console.log(stdout);
+                console.log(stderr);
+                console.log("Suceess!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! add")
+            }
             
         });
-        cp.exec('git pull -r', function(error,stdout,stderr){
+        cp.exec(`git commit -m '${issueID}'`, {cwd: this.folderPath}, function(error,stdout,stderr){
+            if (error) {
+                console.log("Error occured while committing:"+error);
+                throw new Error(error);
+            }
+            else {
+                console.log(stdout);
+                console.log(stderr);
+                console.log("Suceess!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! pcommit")
+            }
+            
+        });
+        cp.exec('git pull -r', {cwd: this.folderPath}, function(error,stdout,stderr){
             if (error) {
                 console.log("Error occured while taking pull:"+error);
                 throw new Error(error);
             }
-            console.log(stdout);
-            console.log(stderr);
+            else {
+                console.log(stdout);
+                console.log(stderr);
+                console.log("Suceess!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!pull")
+            }
             
         });
+        
         // cp.exec('git push', {cwd: stepConcatenationPath}, function(error,stdout,stderr){
         //     if (error) {
         //         console.log("Error occured while pushing:"+error);

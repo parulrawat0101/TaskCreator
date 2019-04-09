@@ -28,9 +28,14 @@ utility.fetchJSONdata('./init.json')
         //console.log(stepConcatenationPath);
          var data=utility.updateLocalInputJson(configPath,utility.taskID);
          utility.overWriteInputJson (stepConcatenationPath,data);
-        utility.rebase(stepConcatenationPath)  //calling rebase
-        utility.gitCommit();
-        console.log("Suceess!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
+        utility.rebase(stepConcatenationPath)
+            .then((data)=>{
+                console.log("data isssssssssssss",data);
+                utility.gitCommit();
+            })
+            .catch((error)=>{
+
+            })
 
     })
     .catch((error)=>{

@@ -27,10 +27,10 @@ utility.fetchJSONdata('./init.json')
         // utility.fetchJSONdata.bind(x);
         //console.log(stepConcatenationPath);
          var data=utility.updateLocalInputJson(configPath,utility.taskID);
-         utility.overWriteInputJson (stepConcatenationPath,data)
-         utility.rebase(stepConcatenationPath)
-         
-
+         utility.overWriteInputJson (stepConcatenationPath,data);
+        utility.rebase(stepConcatenationPath)  //calling rebase
+        utility.gitCommit();
+        console.log("Suceess!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
 
     })
     .catch((error)=>{

@@ -10,6 +10,7 @@ var cp = require("child_process");
 var data={
     taskID:'',
     folderName:'',
+    folderPath:'',
     fetchJSONdata : function (file) {
             return new Promise((resolve, reject) => {
                 fs.readFile(file, (error,data) => {
@@ -35,12 +36,12 @@ var data={
         //2. split the string in array
         var splitTaskID= this.splitTaskIDString(this.taskID); //3. now append the folder path
 
-        var folderPath=`${configPath}\\XMLs\\TaskXmls2019\\${splitTaskID[0]}\\${splitTaskID[1]}\\${splitTaskID[2]}`;
-        this.folderName=`${folderPath}\\${splitTaskID[3]}.${splitTaskID[4]}.${splitTaskID[5]}`;
+        this.folderPath=`${configPath}\\XMLs\\TaskXmls2019\\${splitTaskID[0]}\\${splitTaskID[1]}\\${splitTaskID[2]}`;
+        this.folderName=`${this.folderPath}\\${splitTaskID[3]}.${splitTaskID[4]}.${splitTaskID[5]}`;
         //console.log(this.folderName); +
         
         //console.log(`Task to be created at ${this.folderName}`);+
-        this.createFolder(folderPath,this.folderName);
+        this.createFolder(this.folderPath,this.folderName);
         return this;
 },
     splitTaskIDString : function (taskID) {
@@ -102,19 +103,48 @@ var data={
     },
     rebase : function(stepConcatenationPath) {
 
-    cp.exec("node dist/index.js --input=input.json", {cwd: stepConcatenationPath}, function(error,stdout,stderr){
+        cp.exec("node dist/index.js --input=input.json", {cwd: stepConcatenationPath}, function(error,stdout,stderr){
         if (error) {
             console.log("error while rebasing:"+error);
+            return 0;
         }
-        else if (stdout) {
-            console.log(stdout);
-        }
-        else if (stderr) {
-            console.log(stderr);
-        }
+        console.log(stdout);
+        console.log(stderr);
+        return 1;
         
     });
-    console.log("finished");
+    },
+    gitCommit : function (stepConcatenationPath) {
+
+        var issueID=process.argv[3];
+        cp.exec(`git commit -am '${issueID}'`, function(error,stdout,stderr){
+            if (error) {
+                console.log("Error occured while committing:"+error);
+                throw new Error(error);
+            }
+            console.log(stdout);
+            console.log(stderr);
+            
+        });
+        cp.exec('git pull -r', function(error,stdout,stderr){
+            if (error) {
+                console.log("Error occured while taking pull:"+error);
+                throw new Error(error);
+            }
+            console.log(stdout);
+            console.log(stderr);
+            
+        });
+        // cp.exec('git push', {cwd: stepConcatenationPath}, function(error,stdout,stderr){
+        //     if (error) {
+        //         console.log("Error occured while pushing:"+error);
+        //         throw new Error(error);
+        //     }
+        //     else {console.log(stdout);
+        //     console.log(stderr);}
+            
+        // });
     }
+
 }
 module.exports=data;

@@ -31,7 +31,15 @@ utility.fetchJSONdata('./init.json')
         utility.rebase(stepConcatenationPath)
             .then((data)=>{
                 console.log("data isssssssssssss",data);
-                utility.gitCommit();
+                try {
+                    utility.gitAdd();
+                   
+                }
+                catch(e) {
+                    console.log(e);
+                }
+                
+                //utility.gitPull();
             })
             .catch((error)=>{
 

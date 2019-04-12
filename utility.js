@@ -123,9 +123,9 @@ var data={
         })
         
     },
-    gitAdd : function (callback) {
-
-        cp.exec('git add -A && git commit', {cwd: this.folderPath}, function(error,stdout,stderr){
+    gitAdd : function () {
+        var issueID=process.argv[3];
+        cp.exec(`git stash --include-untracked && git add -A && git commit -m ${issueID}`, {cwd: this.folderPath}, function(error,stdout,stderr){
             if (error) {
                 console.log("Error occured while adding:"+error);
                 throw new Error(error);
@@ -148,7 +148,7 @@ var data={
         // });
     },
     gitCommit :  function (){
-        var issueID=process.argv[3];
+        
         cp.exec(`git commit -m '${issueID}'`, {cwd: 'C:\\Users\\Parul.COMPRO\\Desktop\\New folder\\express_website'}, function(error,stdout,stderr){
             if (error) {
                 console.log('xcommiting in Error occured while committing:'+error);

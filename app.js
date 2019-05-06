@@ -4,7 +4,10 @@ var stepConcatenationPath;
 var utility=require('./utility.js')
 
 
-utility.fetchJSONdata('./init.json')
+
+
+
+utility.fetchInitJSONdata('./init.json')
     .then((result) => {
         // enable status true and if the directory mentioned exists
         if (JSON.parse(result).enable === 'true'

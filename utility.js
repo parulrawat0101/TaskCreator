@@ -50,7 +50,7 @@ var data = {
             throw new Error('Task Folder already present.');
         } else {
             console.log(`Task Folder does not exists at ${this.folderName} hence creating folder`)
-            this.createFolder(this.folderPath, this.folderName);
+            this.createTaskFolder(this.folderPath, this.folderName);
         }
 
         return this;
@@ -62,12 +62,13 @@ var data = {
         arr[1] = arr[1].toLowerCase();
         return arr;
     },
-    createFolder: function (folderPath, folderName) {
+    createTaskFolder: function (folderPath, folderName) {
 
         if (fs.statSync(folderPath).isDirectory() === true) { //if directory exists
             fs.mkdir(folderName, (err) => {
                 if (err) {
                     console.log(err);
+                    throw new Error('Failiure in creating Task Folder');
                 } else {
                     console.log('Success in creating Task Folder');
                 }
@@ -76,14 +77,16 @@ var data = {
         } else {
             fs.mkdir(folderPath, (err) => {
                 if (err) {
-                    console.log(err)
+                    console.log(err);
+                    throw new Error('Failiure in creating Chapter Folder');
                 } else {
-                    console.log("success")
+                    console.log("success");
                 }
             });
             fs.mkdir(folderName, (err) => {
                 if (err) {
                     console.log(err)
+                    throw new Error('Failiure in creating Task Folder');
                 } else {
                     console.log("success")
                 }
@@ -150,3 +153,4 @@ var data = {
 
 }
 module.exports = data;
+

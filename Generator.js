@@ -1,20 +1,36 @@
 const fs = require('fs');
 var process = require('process');
-var cp = require("child_process");
+const cp = require('child_process')
 var fetchInputJSONdata= function (file) {
         
-            fs.readFile(file, (error, data) => {
-                if (error) throw new Error(error);
-                else {
-                    console.log('Fetched Input.json succesfully');
-                    return JSON.parse(data);}
-            });
+             return (JSON.parse(fs.readFileSync(file,'utf8')));
 
     }
 
     var inputJSONData=fetchInputJSONdata('./input.json');
-    console.log(inputJSONData)
-    cp.exec("npm start", {}, function (error, stdout, stderr) {
-                if (error) {}
-                else {}
-            });
+    console.log(inputJSONData.tasks);
+    a();
+    function a (){
+
+       for(var x in inputJSONData.tasks){
+        console.log(x)
+        var child=cp.execFileSync('node', ['./app.js', x, inputJSONData.tasks[x]]).toString();
+        console.log(child);
+        //console.log(stdout);
+        //console.log(stdout);
+        //  cp.exec('git status', (err, stdout, stderr) => {
+        //     if (err) {
+        //       console.error(`exec error: ${err}`);
+        //       return;
+        //     }
+        //     console.log(stdout)
+        //,(error, stdout, stderr) => {
+        //     if (error) {
+        //         console.log(error);
+        //         console.log(stderr)
+        //     }
+        //     console.log(stdout);
+        // });
+    // });
+}
+}

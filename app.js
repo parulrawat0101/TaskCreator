@@ -24,22 +24,19 @@ utility.fetchInitJSONdata('./init.json')
         utility.createFolderPath(configPath);
         var data=utility.createInputJSONData(utility.taskID);
         utility.overWriteInputJson (stepConcatenationPath,data);
-        utility.rebase(stepConcatenationPath)
-            .then((data)=>{
-                console.log("Rebase done",data);
-                try {
-                    utility.sanitize();
-                    utility.gitAdd();
-                }
-                catch(e) {
-                    console.log(e);
-                }
-            })
-            .catch((error)=>{
-
-            });
+        return utility.rebase(stepConcatenationPath)
+         
+    })
+    .then(()=>{
+        console.log("Rebase done");
+            utility.sanitize();
+            
+    })
+    .then(()=>{
+        return utility.gitAdd();
     })
     .catch((error)=>{
-        console.log(error);
+        console.log("catched"+error)
     })
+    
 

@@ -1,6 +1,9 @@
 const fs = require('fs');
 var process = require('process');
-var cp = require("child_process");
+// var cp = require("child_process");
+const cp = require('promisify-child-process');
+const np=require('child_process');
+
 
 //JSON path
 var data = {
@@ -35,8 +38,8 @@ var data = {
     },
     createFolderPath: function (configPath) {
         //1.fetch task ID and issue ID
-        this.taskID = this.inputTaskID();
-        this.issueID = this.inputIssueID();
+        this.taskID = 'GO19.XL.09.9B.03.A1'//this.inputTaskID();
+        this.issueID = 'SON-32888'//this.inputIssueID();
 
 
         //2. split the string in array
@@ -46,7 +49,7 @@ var data = {
         this.folderName = `${this.folderPath}\\${splitTaskID[3]}.${splitTaskID[4]}.${splitTaskID[5]}`;
 
         //if task folder already exists
-        if (fs.existsSync(this.folderName)) {
+        if (fs.exists(this.folderName)) {
             throw new Error('Task Folder already present.');
         } else {
             console.log(`Task Folder does not exists at ${this.folderName} hence creating folder`)
@@ -62,36 +65,39 @@ var data = {
         arr[1] = arr[1].toLowerCase();
         return arr;
     },
-    createTaskFolder: function (folderPath, folderName) {
-
-        if (fs.statSync(folderPath).isDirectory() === true) { //if directory exists
-            fs.mkdir(folderName, (err) => {
-                if (err) {
-                    console.log(err);
-                    throw new Error('Failiure in creating Task Folder');
-                } else {
-                    console.log('Success in creating Task Folder');
-                }
-            })
-            return folderPath;
-        } else {
-            fs.mkdir(folderPath, (err) => {
-                if (err) {
-                    console.log(err);
-                    throw new Error('Failiure in creating Chapter Folder');
-                } else {
-                    console.log("success");
-                }
-            });
-            fs.mkdir(folderName, (err) => {
-                if (err) {
-                    console.log(err)
-                    throw new Error('Failiure in creating Task Folder');
-                } else {
-                    console.log("success")
-                }
-            });
-        }
+    createTaskFolder: async function (folderPath, folderName) {
+        try {
+            if (await fs.statSync(folderPath).isDirectory() === true) { //if directory exists
+                fs.mkdir(folderName, (err) => {
+                    if (err) {
+                        console.log(err);
+                        throw new Error('Failiure in creating Task Folder');
+                    } else {
+                        console.log('Success in creating Task Folder');
+                    }
+                })
+                return folderPath;
+            }
+    }
+    catch (e){
+        fs.mkdir(folderPath, (err) => {
+            if (err) {
+                console.log(err);
+                //throw new Error('Failiure in creating Chapter Folder');
+            } else {
+                console.log("Success in creating Chapter Folder");
+            }
+        });
+        fs.mkdir(folderName, (err) => {
+            if (err) {
+                console.log(err)
+                throw new Error('Failiure in creating Task Folder');
+            } else {
+                console.log("Success in creating Task Folder")
+            }
+        });
+        return folderPath;
+    }
     },
     createInputJSONData: function (taskID) {
 
@@ -117,37 +123,46 @@ var data = {
         });
     },
     rebase: function (stepConcatenationPath) {
-        return new Promise((resolve, reject) => {
-            cp.exec("node dist/index.js --input=input.json", {
+            
+        // return new Promise((resolve, reject) => {
+        //     cp.exec("node dist/index.js --input=input.json", (error, stdout, stderr) => {
+        //         if (error) reject(error);
+        //         else resolve(data);
+        //     });
+        // });
+        np.execSync("node dist/index.js --input=input.json", {
                 cwd: stepConcatenationPath
-            }, function (error, stdout, stderr) {
+            }, function (error, stdout, stderr) {debugger;
                 if (error) {
-                    reject(error);
-                } else resolve(stdout);
+                } 
+                else {
+                    debugger;
+                //     console.log("Rebase done",data);
+                //     try {
+                //         sanitize();
+                //         gitAdd();
+                //     }
+                //     catch(e) {
+                //         console.log(e);
+                //     }
+                // }
 
-            });
-        })
+
+            }});
+
 
     },
     sanitize() {
+        console.log('in sani')
         fs.unlink(`${this.folderName}\\ConcatenationInfo.log`, function (err) {
             if (err) return console.log(err);
             console.log('Task Sanitized');
         });
-    },
+    },//
     gitAdd: function () {
-        cp.exec(`git add -A && git commit -m ${this.issueID} && git pull -r && git push`, {
+        console.log("in add",+this.taskID);
+        return cp.exec(`git add -A && git commit -m ${this.issueID}`, {
             cwd: this.folderPath
-        }, function (error, stdout, stderr) {
-            if (error) {
-                console.log("Error occured:- " + error);
-                throw new Error(error);
-            } else {
-                console.log(stdout);
-                console.log(stderr);
-                console.log("Task pushed Suceessfully");
-            }
-
         });
     }
 

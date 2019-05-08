@@ -5,9 +5,9 @@ var cp = require("child_process");
 //JSON path
 var data = {
     taskID: '',
-    folderName: '',
-    folderPath: '',
-    fetchJSONdata: function (file) {
+    taskPath: '',
+    chapterPath: '',
+    fetchConfigJSON: function (file) {
         
         return new Promise((resolve, reject) => {
             fs.readFile(file, (error, data) => {
@@ -32,15 +32,15 @@ var data = {
         //2. split the string in array
         var splitTaskID = this.splitTaskIDString(this.taskID); //3. now append the folder path
 
-        this.folderPath = `${configPath}\\XMLs\\TaskXmls2019\\${splitTaskID[0]}\\${splitTaskID[1]}\\${splitTaskID[2]}`;
-        this.folderName = `${this.folderPath}\\${splitTaskID[3]}.${splitTaskID[4]}.${splitTaskID[5]}`;
+        this.chapterPath = `${configPath}\\XMLs\\TaskXmls2019\\${splitTaskID[0]}\\${splitTaskID[1]}\\${splitTaskID[2]}`;
+        this.taskPath = `${this.chapterPath}\\${splitTaskID[3]}.${splitTaskID[4]}.${splitTaskID[5]}`;
 
         //if task folder already exists
-        if (fs.existsSync(this.folderName)) {
+        if (fs.existsSync(this.taskPath)) {
             throw new Error('Task Folder already present.');
         } else {
-            console.log(`Task Folder does not exists at ${this.folderName} hence creating folder`)
-            this.createTaskFolder(this.folderPath, this.folderName);
+            console.log(`Task Folder does not exists at ${this.taskPath} hence creating folder`)
+            this.createTaskFolder(this.chapterPath, this.taskPath);
         }
 
         return this;
@@ -52,11 +52,11 @@ var data = {
         arr[1] = arr[1].toLowerCase();
         return arr;
     },
-    createTaskFolder: function (folderPath, folderName) {
+    createTaskFolder: function (chapterPath, taskPath) {
 
         try {
-            if (fs.statSync(folderPath).isDirectory() === true) { //if directory exists
-            fs.mkdir(folderName, (err) => {
+            if (fs.statSync(chapterPath).isDirectory() === true) { //if directory exists
+            fs.mkdir(taskPath, (err) => {
                 if (err) {
                     console.log(err);
                     throw new Error('Failiure in creating Task Folder');
@@ -64,10 +64,10 @@ var data = {
                     console.log('Success in creating Task Folder');
                 }
             })
-            return folderPath;
+            return chapterPath;
             }
         } catch (e) {
-            fs.mkdir(folderPath, (err) => {
+            fs.mkdir(chapterPath, (err) => {
                 if (err) {
                     console.log(err);
                     throw new Error('Failiure in creating Chapter Folder');
@@ -75,7 +75,7 @@ var data = {
                     console.log("Success in creating Chapter Folder");
                 }
             });
-            fs.mkdir(folderName, (err) => {
+            fs.mkdir(taskPath, (err) => {
                 if (err) {
                     console.log(err)
                     throw new Error('Failiure in creating Task Folder');
@@ -88,7 +88,7 @@ var data = {
     createInputJSONData: function (taskID) {
 
         taskID = taskID.replace(/19/, '16');
-        var xmls = this.folderName.split('sim5service\\');
+        var xmls = this.taskPath.split('sim5service\\');
 
         var input = {
             steps: [{
@@ -122,14 +122,14 @@ var data = {
 
     },
     sanitize() {
-        fs.unlink(`${this.folderName}\\ConcatenationInfo.log`, function (err) {
+        fs.unlink(`${this.taskPath}\\ConcatenationInfo.log`, function (err) {
             if (err) return console.log(err);
             console.log('Task Sanitized');
         });
     },
     gitAdd: function () {
         cp.exec(`git add -A && git commit -m ${this.issueID} && git pull -r && git push`, {
-            cwd: this.folderPath
+            cwd: this.chapterPath
         }, function (error, stdout, stderr) {
             if (error) {
                 console.log("Error occured:- " + error);

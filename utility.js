@@ -8,7 +8,7 @@ var data = {
     folderName: '',
     folderPath: '',
     issueID: '',
-    fetchInitJSONdata: function (file) {
+    fetchJSONdata: function (file) {
         
         return new Promise((resolve, reject) => {
             fs.readFile(file, (error, data) => {

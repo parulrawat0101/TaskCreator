@@ -7,7 +7,6 @@ var data = {
     taskID: '',
     folderName: '',
     folderPath: '',
-    issueID: '',
     fetchJSONdata: function (file) {
         
         return new Promise((resolve, reject) => {
@@ -25,18 +24,9 @@ var data = {
         }
         return this.taskID;
     },
-    inputIssueID: function () {
-
-        this.issueID = process.argv[3];
-        if (!this.issueID) {
-            throw new Error('Please enter Issue ID');
-        }
-        return this.issueID;
-    },
     createFolderPath: function (configPath) {
         //1.fetch task ID and issue ID
         this.taskID = this.inputTaskID();
-        this.issueID = this.inputIssueID();
 
 
         //2. split the string in array
@@ -64,7 +54,8 @@ var data = {
     },
     createTaskFolder: function (folderPath, folderName) {
 
-        if (fs.statSync(folderPath).isDirectory() === true) { //if directory exists
+        try {
+            if (fs.statSync(folderPath).isDirectory() === true) { //if directory exists
             fs.mkdir(folderName, (err) => {
                 if (err) {
                     console.log(err);
@@ -74,13 +65,14 @@ var data = {
                 }
             })
             return folderPath;
-        } else {
+            }
+        } catch (e) {
             fs.mkdir(folderPath, (err) => {
                 if (err) {
                     console.log(err);
                     throw new Error('Failiure in creating Chapter Folder');
                 } else {
-                    console.log("success");
+                    console.log("Success in creating Chapter Folder");
                 }
             });
             fs.mkdir(folderName, (err) => {
@@ -88,7 +80,7 @@ var data = {
                     console.log(err)
                     throw new Error('Failiure in creating Task Folder');
                 } else {
-                    console.log("success")
+                    console.log("Success in creating Task Folder")
                 }
             });
         }
@@ -154,3 +146,16 @@ var data = {
 }
 module.exports = data;
 
+
+
+
+
+// ,
+//     inputIssueID: function () {
+
+//         this.issueID = process.argv[3];
+//         if (!this.issueID) {
+//             throw new Error('Please enter Issue ID');
+//         }
+//         return this.issueID;
+//     }

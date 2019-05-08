@@ -4,7 +4,7 @@ var stepConcatenationPath;
 var utility=require('./utility.js')
 
 
-utility.fetchJSONdata('./init.json')
+utility.fetchJSONdata('./config.json')
     .then((result) => {
         // enable status true and if the directory mentioned exists
         if (JSON.parse(result).enable === 'true'
@@ -23,18 +23,14 @@ utility.fetchJSONdata('./init.json')
         utility.overWriteInputJson (stepConcatenationPath,data);
         utility.rebase(stepConcatenationPath)
             .then((data)=>{
-                console.log("Rebase done",data);
                 try {
                     utility.sanitize();
-                    utility.gitAdd();
+                    //utility.gitAdd();
                 }
                 catch(e) {
                     console.log(e);
                 }
             })
-            .catch((error)=>{
-
-            });
     })
     .catch((error)=>{
         console.log(error);

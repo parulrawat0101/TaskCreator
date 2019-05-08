@@ -17,16 +17,18 @@ How to use:-
         "enable":"true",
         "stepConcatenation": "E:\\Sim5GIT\\tools-investigations-2019\\tools\\step-concatenation-tool"
     }
-2. Initialize "input.json" :-
+
+2. Initialize "step-concatenation-tool"
+    Follow README of step-concatenation-tool
+
+3. Initialize "input.json" :-
     input.json is a json file which has an array of "tasks", could be single or multiple
     Enter all the tasks to be rebased in that array.
 
-3. Initialize "step-concatenation-tool"
-    Follow README of step-concatenation-tool
 
 Command:- 
 npm start
   
-Note:- 
-       1. Tool assumes that the corresponding 2016 task (from which rebase is to be done) has the same chapter and serial as 2019 task.
+Note:- 1. Git is clean (TaskXmls2019)
+       2. Tool assumes that the corresponding 2016 task (from which rebase is to be done) has the same chapter and serial as 2019 task.
        For example:- if a task to be rebased is "GO19.XL.06.6A.17.A1", then tool will rebase from task "GO16.XL.06.6A.17.A1"
